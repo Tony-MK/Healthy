@@ -1,0 +1,67 @@
+{% extends "auth/base.html" %}
+
+{% block title %} Login {% endblock %}
+
+
+{% block content %}
+<form method="POST" class="login100-form validate-form">
+    {% csrf_token %}
+
+    <span class="login100-form-title p-b-26">
+        Welcome
+    </span>
+
+    <span class="login100-form-title p-b-48">
+        <i class="zmdi zmdi-font"></i>
+    </span>
+
+    {% for field  in form %}
+        <div class="wrap-input100 validate-input" >
+
+
+            {% if field.input_type == 'password' %}
+            <span class="btn-show-pass">
+                <i class="zmdi zmdi-eye"></i>
+            </span>
+            {% endif %}
+
+
+             {% for error in field.errors %}
+                <p class="error">{{ error }}</p>
+                <br>
+            {% endfor %}
+
+
+            <span class="focus-input100" data-placeholder="{{ field.label }}"></span>
+            <br>
+            <br>
+            {{field}}
+                <!--
+            {% if field.help_text %}
+                <small class="help_text">{{ field.help_text }}</small>
+             {% endif %}
+            !-->
+        </div>
+    {% endfor %}
+
+
+    <div class="container-login100-form-btn">
+        <div class="wrap-login100-form-btn">
+            <div class="login100-form-bgbtn"></div>
+            <button class="login100-form-btn">
+                Login
+            </button>
+        </div>
+    </div>
+
+    <div class="text-center p-t-115">
+        <span class="txt1">
+            Not a member ?
+        </span>
+
+        <a class="txt2" href="/signup">
+           Join
+        </a>
+    </div>
+</form>
+{% endblock %} 

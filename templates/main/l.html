@@ -1,12 +1,12 @@
 <html>
 <head>
+	{% load static %}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    {% block header %}
     <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    {% block title %}{% endblock %}
 </head>
 <body>
-	{% block %}
-	{% endblock %}
+	{% block form %}{% endblock %}
 </body>
 </html>

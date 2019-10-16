@@ -25,45 +25,51 @@ class UserManager(BaseUserManager):
 	    return user
 
 	def create_user(self, email, password=None, **extra_fields):
-	    extra_fields.setdefault('is_superuser', False)
+	    extra_fields.setdefault('is_superuser', False);
+	    extra_fields.setdefault('is_staff',False);
+	    extra_fields.setdefault('is_active',False);
 	    return self._create_user(email, password, **extra_fields)
 
 	def create_superuser(self, email, password, **extra_fields):
-	    extra_fields.setdefault('is_superuser', True)
-	    extra_fields.setdefault('is_staff', True);
+		if extra_fields.get('is_superuser') is not True:
+			raise ValueError('Superuser must have is_superuser=True.')
 
-	    if extra_fields.get('is_superuser') is not True:
-	        raise ValueError('Superuser must have is_superuser=True.')
-
-	    return self._create_user(email, password, **extra_fields)
+		extra_fields.setdefault('is_superuser',True)
+		extra_fields.setdefault('is_staff', True);
+		return self._create_user(email, password, **extra_fields)
 
 
 
 class User(AbstractBaseUser,PermissionsMixin):
-	email = models.EmailField(blank=False,max_length=254,help_text="Email Address",editable=False,unique=True);
-	id = models.UUIDField(default=uuid.uuid4,blank=False,primary_key=True,editable=False,unique=True);
-	first_name = models.CharField(blank=False,max_length=128,help_text="First Name");
-	last_name = models.CharField(blank=False,max_length=128,help_text="Surname");
-	middle_name = models.CharField(blank=True,max_length=128,help_text="Middle Name");
 
-	is_staff = models.BooleanField(default=False)
-	is_active = models.BooleanField(help_text= 'active', default=True)
-	avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+	
+	id = models.UUIDField(blank=False,default=uuid.uuid4,primary_key=True,unique=True);
+	email = models.EmailField(blank=False,max_length=254,help_text="Email Address",unique=True);
 
-
-	nationality = CountryField(blank=False,help_text="Country of Origin");
-	primary_phone_number = PhoneField(blank=False,E164_only=False,help_text="Primary Phone Number");
-	secondary_phone_number = PhoneField(blank=True,E164_only=False,help_text="Secondary Phone Number");
-
-	date_of_birth = models.DateTimeField(blank=False,help_text="Date Of Birth");
 	date_joined = models.DateTimeField(blank=False,help_text='Registration Date', auto_now_add=True)
-	passport_number = models.CharField(blank=True,max_length=16,help_text="Passport Registration Number");
+	date_of_birth = models.DateField(blank=False,help_text="Required. The Day you were Born.Address same as on your Birth Certificate");
 
+	first_name = models.CharField(blank=False,max_length=128,help_text="Required. Your First Name, same as on your Birth Certificate");
+	family_name = models.CharField(max_length=128,help_text="Family Name");
+	middle_name = models.CharField(max_length=128,help_text="Middle Name");
+
+	birth_certificate_number = models.CharField(max_length=16,help_text="Birth Certificate Number");
+	passport_number = models.CharField(max_length=16,help_text="Passport Registration Number");
+
+	nationality = CountryField(help_text="Country of Origin");
+	phone_number = PhoneField(E164_only=False,help_text="Primary Phone Number");
+	
 	GENDER_CHOICES = [("M","Male"),("F","Female")]
 	gender = models.CharField(blank=False,max_length=2, choices=GENDER_CHOICES,help_text="User Sex");
 
+	#avatar = models.ImageField(default='avatars/default.png',editable=True,upload_to='avatars/')
+
+	is_staff = models.BooleanField(blank=False,default=False,)
+	is_superuser = models.BooleanField(blank=False,default=False,);
+	is_active = models.BooleanField(blank=False,default=True)
+
 	USERNAME_FIELD = "email"
-	REQUIRED_FIELDS = ["primary_phone_number","first_name","last_name","date_of_birth","date_joined","gender"]
+	REQUIRED_FIELDS = ["first_name","date_joined","gender"]
 
 	objects = UserManager();
 

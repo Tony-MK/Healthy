@@ -4,4 +4,4 @@ class Child(User):
 	pass;
 
 class CareTaker(User):
-	idenfition_number = models.CharField(max_length=16);
+	idenfition_number = models.CharField(blank=False,max_length=16,unique=True,editable=False);

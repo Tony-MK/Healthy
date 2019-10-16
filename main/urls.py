@@ -22,6 +22,6 @@ urlpatterns = [
     path('',IndexView.as_view(), name="Index"),
     path('about/',AboutView.as_view(), name="About"),
     path('login/',LoginView.as_view(),name="Login"),
-    path('register/',RegisterView.as_view(),name="Register"),
+    path('child/register/',ChildRegisterView.as_view(),name="Child Register"),
 
 ]

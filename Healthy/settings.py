@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+AUTH_USER_MODEL = "main.User"
+
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -31,14 +34,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "main",
     'django.contrib.admin',
-    'main.models.'
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third Parties
+    'oauth2_provider',
     'django_countries',
 
 ]

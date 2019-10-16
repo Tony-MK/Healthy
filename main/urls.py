@@ -16,10 +16,11 @@ Including another URLconf
 
 
 from django.urls import path
-from .views import IndexView,LoginView,RegisterView
+from .views import *
 
 urlpatterns = [
     path('',IndexView.as_view(), name="Index"),
+    path('about/',AboutView.as_view(), name="About"),
     path('login/',LoginView.as_view(),name="Login"),
     path('register/',RegisterView.as_view(),name="Register"),
 

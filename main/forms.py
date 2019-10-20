@@ -1,24 +1,41 @@
-from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
 from django import forms
-from .user import User
-from phone_field import PhoneField
-from  django_countries.fields import CountryField
+from .models import Child,CareTaker,User
 
-DATE_FORMATS = ['%m/%d/%Y','%m/%d/%y','%m-%d-%Y','%m-%d-%y','%Y-%m-%d']
 
-class  SignUpForm(UserCreationForm):
-	gender = forms.ChoiceField(required=True,choices=User.GENDER_CHOICES,help_text="User Sex");
-	date_of_birth = forms.DateField(input_formats=DATE_FORMATS , )
-	email = forms.EmailField(max_length=30,required=True,help_text="Required. An Email Address eg.. Gmail, YahooMail ");
+DATE_FORMATS = ['%d/%m/%y','%d/%m/%Y','%m/%d/%y','%m/%d/%Y','%m-%d-%Y','%m-%d-%y','%Y-%m-%d']
+
+class CareTakerRegisterForm(UserCreationForm):
+	date_of_birth = forms.DateField(input_formats=DATE_FORMATS)
 
 	class Meta:
-		model = User
+		model = CareTaker
+		fields = ('first_name','gender','date_of_birth','phone_number','email')
+		pass;
+
+
+class ChildRegisterForm(UserCreationForm):
+	date_of_birth = forms.DateField(input_formats=DATE_FORMATS)
+	class Meta:
+		model = Child
 		fields = ('first_name','gender','date_of_birth','email')
-	
+		pass;
 
 
-class  LoginUpForm(AuthenticationForm):
+
+class LogInForm(AuthenticationForm):
+
 	class Meta:
 		model = User
 		fields = ('email','password');
+
+
+class PasswordResetForm(AuthenticationForm):
+	class Meta:
+		model = User
+		fields = ('password');
+
+
+
+
 

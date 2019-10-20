@@ -30,11 +30,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# 
+
+EMAIL_HOST = "smtp.gmail.com";
+EMAIL_PORT = "465"
+EMAIL_HOST_USER = "kithinzi97@gmail.com"
+EMAIL_HOST_PASSWORD = "cxtvgfussbztqfzf"
+EMAIL_USE_SSL = True;
+EMAIL_USE_TLS = False;
+
+
 
 # Application definition
 
 INSTALLED_APPS = [
-    "main",
+    'main',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -86,6 +96,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'VERSION': ' 2.4.0',
     }
 }
 

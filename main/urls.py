@@ -15,13 +15,26 @@ Including another URLconf
 """
 
 
-from django.urls import path
+from django.urls import path,include
+from django.conf.urls import url
 from .views import *
 
 urlpatterns = [
     path('',IndexView.as_view(), name="Index"),
     path('about/',AboutView.as_view(), name="About"),
-    path('login/',LoginView.as_view(),name="Login"),
-    path('child/register/',ChildRegisterView.as_view(),name="Child Register"),
+
+    ## AUTH 
+    path('login/',ChildLoginView.as_view(),name="Child Login"),
+    path('register/', ChildRegisterView.as_view(), name="Child Registration"),
+    url(r'^activate/(?P<b64id>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',activate,name="Activate"),
+
+    path('caretaker/login',CareTakerLoginView.as_view(),name="CareTaker Login"),
+   # path('caretaker/register',CareTakeRegisterView.as_view(),name="CareTaker Registration"),
+
+   # path('forgot-password/',LoginView.as_view(),name="Forgot Password"),
+   # path('reset-password/',LoginView.as_view(),name="Password Reset"),
+
+    #path('app/',),
+   # path('caretaker/',include("caretaker.urls")),
 
 ]

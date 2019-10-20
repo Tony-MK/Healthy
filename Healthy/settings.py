@@ -33,11 +33,18 @@ ALLOWED_HOSTS = []
 # 
 
 EMAIL_HOST = "smtp.gmail.com";
-EMAIL_PORT = "465"
-EMAIL_HOST_USER = "kithinzi97@gmail.com"
+EMAIL_HOST_USER = "smakau516@gmail.com"
 EMAIL_HOST_PASSWORD = "cxtvgfussbztqfzf"
+
 EMAIL_USE_SSL = True;
 EMAIL_USE_TLS = False;
+
+
+if EMAIL_USE_SSL:
+    EMAIL_PORT = "465"
+elif EMAIL_USE_TLS:
+    EMAIL_PORT = "587"
+
 
 
 

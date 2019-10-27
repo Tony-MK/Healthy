@@ -1,138 +1,115 @@
 # Create your views here.
 
+from .user import User,token_generator
+from .models import Parent,CareTaker
+from .forms import CaretakerRegisterForm,ParentRegisterForm,LogInForm
+from django.contrib.auth import authenticate,login
+from django.contrib.auth import views
 
-from .models import Child,CareTaker
-from .forms import ChildRegisterForm,CareTakerRegisterForm,LogInForm
 
-from django.contrib.auth import authenticate
-
-
-from django.shortcuts import redirect
-
-from django.views.generic import DetailView,FormView,TemplateView
+from django.shortcuts import redirect,render
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from django.views.generic import FormView,TemplateView
 from datetime import timedelta
 
 
-CHILD_AGE_MAX_LIMIT = 17
-CHILD_AGE_MIN_LIMIT = 6
 
-
-class IndexView(TemplateView):
-	"""docstring for IndexView"""
-	template_name = 'main/index.html'
-
-
-class AboutView(TemplateView):
-	"""docstring for AboutView"""
-	template_name = 'main/about.html'
-
-
+decodeBase64Data = lambda data: force_text(urlsafe_base64_decode(data))
 
 
 ###		 AUTH 		###
 
-def activate(req, b64id, token):
-	try:
-		user = User.objects.get(pk=force_text(urlsafe_base64_decode(b64id)));
-		if token_generator.check_token(user, token):
-			user.is_active = True;
-			user.save();
-			return HttpResponse("Successfully activacted Account");
-		return HttpResponse("Wrong or Expired Token");
+class LoginView(FormView):
+	form_class = LogInForm;
+	success_url = "/app/";
 
-	except(User.DoesNotExist):
-		return HttpResponse("User does not exist");
+	def get(self,request,*args,**kwargs):
+		if request.user.is_authenticated:
+			return redirect(request,self.success_url);
+		return super().get(self,request,*args,**kwargs) 
 
-	except(TypeError, ValueError, OverflowError):
-		return HttpResponse("Invalid Token");
+	def post(self,request,*args,**kwargs):
 
-	except Exception as e:
-		raise e;
+		if request.user.is_authenticated:
+			return redirect(request,self.success_url);
 
+		form = self.get_form();
+		if not form.is_valid():
+			return super().form_invalid([form,ValueError("Invalid Form")]);
 
+		form.clean()
+		user = authenticate(email=form.cleaned_data.get("email"),password=form.cleaned_data.get("password"));
+		print(" Email: {} Password: {}".format(form.cleaned_data.get("email"),form.cleaned_data.get("password")))
 
+		if user is None:
+			return super().form_invalid([form,ValueError("Incorrect Email or Password")]);
 
-class ChildRegisterView(FormView):
-	template_name = 'auth/register.html'
-	form_class = ChildRegisterForm;
-	success_url  = '/email_comfiration'
-	def form_valid(self,form):
-		child = form.save(commit=False);
-		child.is_child = True;
-		child.is_active = False;
-		child.send_activation_email();
-		child.save()
+		login(request,user)
 		return super().form_valid(form);
 
-"""
-class CareTakerRegisterView(FormView):
-	template_name = 'auth/register_caretaker.html'
-	form_class = CareTakerRegisterForm;
-	success_url  = '/register/sucess'
+
+class LogOutView(views.LogoutView):
+	next_page = "/login"
+
+
+class ParentRegisterView(FormView):
+	success_url  = '/email_confirmation/'
+	form_class = ParentRegisterForm;
+	template_name = 'auth/parent_register.html'
 	def form_valid(self,form):
-		form.save();
-		email = form.cleaned_data.get('email');
-		try:
-			caretaker = CareTaker.objects.get(email=email);
-			redirect('/caretaker/login');
+		parent = form.save(commit=False);
+		parent.save();
+		parent.send_activation_email();
+		return super().form_valid(form);
 
-		except DoesNotExist:
+class CaretakerRegisterView(FormView):
+	success_url  = '/email_confirmation/'
+	form_class = CaretakerRegisterForm;
+	template_name = 'auth/caretaker_register.html'
+	def form_valid(self,form):
+		caretaker = form.save(commit=False);
+		caretaker.save();
+		caretaker.send_activation_email();
+		return super().form_valid(form);
 
-			CareTaker.create_user(email=email,
-				password=form.cleaned_data.get('password1'),
-				first_name=form.cleaned_data.get('first_name'),
-				family_name=form.cleaned_data.get('family_name'),
-				idenfition_number=form.cleaned_data.get('idenfition_number'),
-				gender=form.cleaned_data.get('gender'),
-				phone_numeber=form.cleaned_data.get('gender'),
-				date_of_birth=form.cleaned_data.get('date_of_birth'),
-			)
-
-			return super().form_valid(form)
-
-		except Exception as e:
-			print(e)
-"""
+class EmailConfirmationView(TemplateView):
+	"""docstring for EmailConfirmationView"""
+	template_name = "auth/activation_prompt.html"
 
 
-def getFullUser(email):
+def activate(request, b64id, token):
+	ctx = {"token":token}
+	pk = decodeBase64Data(b64id);
 	try:
-		return Child.objects.get(email=email)
+		user = User.objects.get(pk=pk);
+		if user is None:
+			ctx["title"] = "No User Found";
+			ctx["msg"] =  "No User was Found with ia primary key of "+user.pk;
+		elif token_generator.check_token(user, token):
+			user.is_active = True;
+
+			user.save();
+			ctx["name"] = user.first_name
+			return render(request,"auth/activation_success.html",ctx);
+		else:
+			ctx["title"] = "Token Authorization Failed";
+			ctx["msg"] = "Token is used or Expired";
+
+	except(User.DoesNotExist):
+		ctx["title"] = "User Error";
+		ctx["msg"] = "No User was Found with a primary key of "+pk;
+
+
+	except(TypeError, ValueError, OverflowError):
+		ctx["title"] = "Invalid Token";
+		ctx["msg"] = "Token has many an issue";
+
 	except Exception as e:
-		try:
-			return CareTaker.objects.get(email=email)
-		except Exception as e:
-			return None;
+		ctx["title"] = "Unknown Error";
+		ctx["msg"] = e;
 
-
-class ChildLoginView(FormView):
-	template_name = 'auth/login.html';
-	form_class = LogInForm;
-	success_url = "child"
-	def form_valid(self,form):
-		try:
-			Child.objects.get(email=email);
-			if authenticate(email=form.cleaned_data.get('email'), password=form.cleaned_data.get('password')):
-				login(request,user);
-				return super().form_valid(form);
-		except Exception as e:
-			raise e
-		return super().form_invalid(form);
-
-class CareTakerLoginView(FormView):
-	template_name = 'auth/login.html';
-	form_class = LogInForm;
-	success_url = "caretaker"
-	def form_valid(self,form):
-		try:
-			ChilCareTaker.objects.get(email=email);
-			if authenticate(self.request,email=form.cleaned_data.get('email'), password=form.cleaned_data.get('password')):
-				login(request,user);
-				return super().form_valid(form);
-			return super().form_invalid(form);
-		except Exception as e:
-			raise e
-		return super().form_invalid(form);
+	return render(request,"auth/activation_failure.html",ctx)
 
 
 

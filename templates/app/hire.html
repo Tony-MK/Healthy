@@ -1,0 +1,64 @@
+{% extends "app/base.html" %}
+
+{% block title %}
+  Book Appointment
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center" style="min-height: 600px; background-image: url({{ object.avatar }}); background-size: cover; background-position: center top;">
+        <!-- Mask -->
+      <span class="mask bg-gradient-default opacity-8"></span>      
+       <div class="container-fluid mt--20">
+          <div class="row">
+            <div class="col-lg-7 col-md-10">
+              <h1 class="display-2 text-white"> {{ user.get_full_name}}</h1>
+              <p class="text-white mt-0 mb-5"> Ready to be hired</p>
+            </div>
+
+            <div class="col-xl-11 order-xl-2 mb-2 mb-xl-0">
+              <div class="card card-profile shadow">
+                <div class="row justify-content-center">
+                  <div class="col-lg-3 order-lg-2">
+                    <div class="card-profile-image">
+                      <a href="{% url 'Caretaker Profile' user.id %}">
+                        <img src="{{ user.avatar }}" class="rounded-circle">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0">
+                  <div class="d-flex justify-content-between">
+                    <a href="/like/{{user.id}}" class="btn btn-sm btn-info mr-4">Save</a>
+                    <a href="/message/{{user.id}}" class="btn btn-sm btn-default float-right">Message</a>
+                  </div>
+                </div>
+                <div class="card-body pt-0 ">
+                  <div class="container mt-8 pb-5">
+                    <div class="text-center">
+                      <div class="row justify-content-center">
+                        <div class="col-xl-6 col-md-8">
+                          <div class="card bg-secondary shadow border-0">
+                            <div class="card-body px-lg-5 py-lg-5">
+                              {% with submit_value="Send Request" %}
+                              {% include "form.html" %}
+                              {% endwith %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+     <!-- Page content -->
+
+{% endblock %}
+

@@ -1,0 +1,48 @@
+<div class="col-xl-6 order-xl-2  mt-7 mb-xl-0">
+  <div class="card card-profile shadow">
+    <div class="row justify-content-center">
+      <div class="col-lg-3 order-lg-2">
+        <div class="card-profile-image">
+          <a href="{% url 'Parent Profile' %}{{user.id}}">
+            <img src="{{ gig.by.avatar }}" class="rounded-circle">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+      <div class="d-flex justify-content-between">
+        <a href="{% url 'Cancel Gig' gig.id %}" class="btn btn-sm btn-info mr-4"><i class="ni ni-single-02"></i></a>
+        <a href="{% url 'Detail Gig' gig.id %}" class="btn btn-sm btn-default float-right"><i class="ni ni-single-02"></i></a>
+      </div>
+    </div>
+    <div class="card-body pt-0 pt-md-4 mt-md-5">
+      
+      <div class="text-center">
+        <span class="font-weight-light"> by:</span><h3>
+          {{ gig.by.first_name }}
+        </h3>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card-profile-stats d-flex justify-content-center mt-md-2">
+            <div>
+              <span class="heading">{{ gig.start }}</span>
+              <span class="description">Start</span>
+            </div>
+            <div>
+              <span class="heading">{{ gig.end}}</span>
+              <span class="description">End</span>
+            </div>
+            <div>
+              <span class="heading">{{ user.overall_rating }}</span>
+              <span class="description">Duration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>

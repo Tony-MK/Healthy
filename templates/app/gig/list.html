@@ -1,0 +1,33 @@
+
+{% extends "app/base.html" %}
+
+{% block title %}
+  Book Appointment
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<!-- Header -->
+<div class="header d-flex align-items-center" style="min-height: 600px; background-image: url({{ object.avatar }}); background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-default opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-12 col-md-10">
+        <h1 class="display-2 text-white"> Gigs </h1>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row`">
+    {% for gig in gigs %}
+      {% include "app/gig/card.html" %}
+    {% endfor %}
+   </div>
+
+
+{% endblock %}

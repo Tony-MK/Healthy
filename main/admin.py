@@ -1,12 +1,17 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
-from .models import User,Child,CareTaker
+from .models import *
 
-admin.site.register(User);
-admin.site.register(Child);
+# User Types
+admin.site.register(Parent);
 admin.site.register(CareTaker);
+#admin.site.register(Child);
+
+
+admin.site.register(Gig);
+
+
 
 
 

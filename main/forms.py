@@ -1,41 +1,79 @@
-from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
-from django import forms
-from .models import Child,CareTaker,User
+from django.contrib.auth.forms import UserCreationForm
+from django.forms import Form,CharField,DateField,DateTimeField,EmailField,ChoiceField
+from .form_inputs import *
+from .models import Parent,CareTaker,User,Gig,Location
 
 
-DATE_FORMATS = ['%d/%m/%y','%d/%m/%Y','%m/%d/%y','%m/%d/%Y','%m-%d-%Y','%m-%d-%y','%Y-%m-%d']
 
-class CareTakerRegisterForm(UserCreationForm):
-	date_of_birth = forms.DateField(input_formats=DATE_FORMATS)
+class CaretakerRegisterForm(UserCreationForm):
+	"""docstring for CaretakerRegisterForm"""
+
+	first_name = CharField(widget= TextInput(attrs={"label":"First Name","icon":"single-02"}),required=True,)
+	email = EmailField(widget=EmailInput(attrs={"label":"Email Address"}),required=True)
+	password1 = CharField(widget=PasswordInput(attrs={"label":"Sercet Password"}),required=True)
+	password2 = CharField(widget=PasswordInput(attrs={"label":"Confirm your Sercet Password "}),required=True)
 
 	class Meta:
 		model = CareTaker
-		fields = ('first_name','gender','date_of_birth','phone_number','email')
+		fields = ('first_name','email','password1','password2')
 		pass;
 
 
-class ChildRegisterForm(UserCreationForm):
-	date_of_birth = forms.DateField(input_formats=DATE_FORMATS)
+class ParentRegisterForm(UserCreationForm):
+	"""docstring for ParentRegisterForm"""
+
+	first_name = CharField(widget= TextInput(attrs={"label":"First Name","icon":"single-02"}),required=True,)
+	email = EmailField(widget=EmailInput(attrs={"label":"Email Address"}),required=True)
+	password1 = CharField(widget=PasswordInput(attrs={"label":"Sercet Password"}),required=True)
+	password2 = CharField(widget=PasswordInput(attrs={"label":"Confirm your Sercet Password "}),required=True)
+
 	class Meta:
-		model = Child
-		fields = ('first_name','gender','date_of_birth','email')
+		model = Parent
+		fields = ('first_name','email','password1','password2')
 		pass;
 
 
-
-class LogInForm(AuthenticationForm):
-
+		
+class LogInForm(Form):
+	email = EmailField(widget=EmailInput(attrs={"label":"Email"}),required=True)
+	password = CharField(widget=PasswordInput(attrs={"label":"Password"}),required=True)
 	class Meta:
 		model = User
-		fields = ('email','password');
+		fields = ('email','password')
+		pass
 
 
-class PasswordResetForm(AuthenticationForm):
+
+
+class GigForm(Form):
+	start_date = DateField(
+		widget= DateInput(attrs={"label":"Begining Time"}),
+		required=True,
+	)
+
+	start_time = CharField(
+		widget= TimeInput(attrs={"label":"Begining Time"}),
+		required=True,
+	)
+
+	end_date = DateField(
+		widget= DateInput(attrs={"label":"Finish Date"}),
+		required=True,
+	)
+
+	end_time = CharField(
+		widget= TimeInput(attrs={"label":"Finish Time"}),
+		required=True,
+	)
+
+	notes  = CharField(
+		widget= TextInput(attrs={"label":"Anything you would like share","icon":"key-50"}),required=True,
+	);
+
+
 	class Meta:
-		model = User
-		fields = ('password');
-
-
-
+		model = Gig
+		fields = ('start_date','end_date','location','caretaker','notes')
+		pass;
 
 
